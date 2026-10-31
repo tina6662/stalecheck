@@ -3,6 +3,7 @@
 set -e
 HERE=$(cd "$(dirname "$0")" && pwd)
 PY=${PYTHON:-python3}
+case "$PY" in */*) PY=$(cd "$(dirname "$PY")" && pwd)/$(basename "$PY") ;; esac  # we cd away below
 WORK=$(mktemp -d)
 cp "$HERE/analysis.py" "$HERE/data.csv" "$HERE/paper.md" "$HERE/paper.tex" "$WORK"
 cd "$WORK"
