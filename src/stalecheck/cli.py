@@ -58,7 +58,7 @@ def cmd_check(args) -> int:
             if f.kind != checker.OK or args.verbose:
                 print(f"{ICONS[f.kind]}  {describe(f)}")
         n_ok = sum(f.kind == checker.OK for f in findings)
-        print(f"\n{n_ok} up to date, {len(problems)} problem(s)", file=sys.stderr)
+        print(f"\n{n_ok} up to date, {len(problems)} problem(s)")
     return 1 if problems else 0
 
 
@@ -70,7 +70,7 @@ def cmd_fix(args) -> int:
             total += 1
             print(f"{f.file}:{f.line}  {f.literal} -> {f.expected}  [{', '.join(f.keys)}]")
     verb = "rewrote" if args.write else "would rewrite (pass --write)"
-    print(f"\n{verb} {total} number(s)", file=sys.stderr)
+    print(f"\n{verb} {total} number(s)")
     return 0
 
 
