@@ -62,6 +62,8 @@ def test_percent_prefers_percent_scale():
     ("−0.12", -0.256, 1, "−0.26"),
     ("-0.12", 0.256, 1, "0.26"),
     (" 0.85 ", 0.9, 1, " 0.90 "),
+    (".70", 0.688, 1, ".69"),  # APA: no leading zero for r, p
+    ("-.31", -0.256, 1, "-.26"),
 ])
 def test_render_keeps_style(like, value, scale, out):
     assert render(value, parse_literal(like), scale) == out

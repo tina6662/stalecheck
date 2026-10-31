@@ -27,6 +27,7 @@ class Literal:
     decimals: int
     percent: bool
     thousands: bool
+    bare_decimal: bool  # ".70" (APA style for values bounded by 1) rather than "0.70"
     sign_char: str  # "-" or unicode minus, kept when re-rendering
     pct_text: str  # e.g. "%", "\\%", " %"
     lead: str
@@ -53,6 +54,7 @@ def parse_literal(text: str) -> Literal | None:
         decimals=decimals,
         percent=bool(m["pct"]),
         thousands="," in raw,
+        bare_decimal=raw.startswith("."),
         sign_char="−" if sign == "−" else "-",
         pct_text=m["pct"] or "",
         lead=m["lead"],
@@ -86,5 +88,7 @@ def render(value: float, like: Literal, scale: int) -> str:
     """Write `value` in the same style as `like`."""
     q = quantize(value, scale, like.decimals)
     body = f"{abs(q):,.{like.decimals}f}" if like.thousands else f"{abs(q):.{like.decimals}f}"
+    if like.bare_decimal and body.startswith("0."):
+        body = body[1:]
     sign = like.sign_char if q < 0 else ""
     return f"{like.lead}{sign}{body}{like.pct_text}{like.trail}"
