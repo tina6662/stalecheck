@@ -61,9 +61,19 @@ def test_track_records_git_commit(isolated):
     sha = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=isolated,
                          capture_output=True, text=True).stdout.strip()
     assert store.git_commit(isolated) == sha
+    # A committed store being rewritten by track() must not count as dirty...
+    (isolated / ".stalecheck").mkdir()
+    (isolated / ".stalecheck" / "results.json").write_text("{}")
+    run("add", ".")
+    run("-c", "user.name=t", "-c", "user.email=t@t", "commit", "-q", "-m", "store")
+    sha = store.git_commit(isolated)
+    (isolated / ".stalecheck" / "results.json").write_text('{"x": []}')
+    (isolated / "sub").mkdir()
+    assert store.git_commit(isolated / "sub") == sha
+    # ...but any other tracked change does, even outside the caller's directory.
     (isolated / "f.txt").write_text("a")
     run("add", "f.txt")
-    assert store.git_commit(isolated) == f"{sha}-dirty"
+    assert store.git_commit(isolated / "sub") == f"{sha}-dirty"
 
 
 def test_git_commit_outside_repo(tmp_path):

@@ -51,8 +51,11 @@ def git_commit(cwd: Path) -> str | None:
         sha = subprocess.run(
             ["git", "rev-parse", "--short", "HEAD"], cwd=cwd, capture_output=True, text=True, check=True
         ).stdout.strip()
+        # Ignore our own store: track() writes it mid-run, which would mark every later value dirty.
         dirty = subprocess.run(
-            ["git", "status", "--porcelain", "--untracked-files=no"], cwd=cwd, capture_output=True, text=True
+            ["git", "status", "--porcelain", "--untracked-files=no", "--", ":/",
+             f":(top,exclude,glob)**/{STORE_DIR}/**"],
+            cwd=cwd, capture_output=True, text=True,
         ).stdout.strip()
     except (OSError, subprocess.CalledProcessError):
         return None
