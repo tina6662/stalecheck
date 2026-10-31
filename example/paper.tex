@@ -1,0 +1,10 @@
+\documentclass{article}
+\newcommand{\sv}[2]{#2}  % stalecheck tag: \sv{key}{as printed}
+\begin{document}
+\section*{Results}
+We analysed $n = \sv{n}{120}$ students; \sv{share_over_7h}{42.5\%} slept at least seven hours.
+Sleep correlated with exam score, $r = \sv{r_sleep_score}{0.699}$,
+$t(\sv{df}{118}) = \sv{t_stat}{10.61}$, $p < .001$,
+with a slope of \sv{slope}{5.99} points per hour.
+% draft note: earlier pilot gave r = 0.52 -- ignored by stalecheck
+\end{document}
